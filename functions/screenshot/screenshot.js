@@ -88,14 +88,14 @@ exports.handler = async (event, context) => {
 
   await page.setViewport({ width, height, deviceScaleFactor: scale });
 
-  const cookies = event.headers.cookie || {};
+  const cookieHeader = event.headers.cookie || "";
 
-  // const cookies = cookieHeader.split(";").reduce((acc, cookie) => {
-  //   const [name, ...rest] = cookie.trim().split("=");
-  //   acc[name] = rest.join("=");
-  //   return acc;
-  // }, {});
-  await page.setCookie(...cookies);
+  const cookies = cookieHeader.split(";").reduce((acc, cookie) => {
+    const [name, ...rest] = cookie.trim().split("=");
+    acc[name] = rest.join("=");
+    return acc;
+  }, {});
+  // await page.setCookie(...cookies);
 
   await page.goto(url, { waitUntil: "networkidle0" });
 
