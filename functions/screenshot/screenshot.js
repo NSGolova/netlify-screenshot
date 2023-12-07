@@ -23,6 +23,19 @@ const options = {
 };
 
 exports.handler = async (event, context) => {
+  const cookieHeader = event.headers.cookie || "";
+  const cookies = cookieHeader.split(";").reduce((acc, cookie) => {
+    const parts = cookie.trim().split("=");
+    if (parts.length >= 2) {
+      const name = parts.shift();
+      const value = parts.join("=");
+      var entry = {};
+      entry[name] = value;
+      acc.push(entry);
+    }
+    return acc;
+  }, []);
+  console.log(cookies);
   const { base, path, width, height, maxage, params, scale } = (() => {
     const settings = defaults(event.path.match(pattern).groups, options);
 
@@ -88,14 +101,7 @@ exports.handler = async (event, context) => {
 
   await page.setViewport({ width, height, deviceScaleFactor: scale });
 
-  const cookieHeader = event.headers.cookie || "";
-
-  const cookies = cookieHeader.split(";").reduce((acc, cookie) => {
-    const [name, ...rest] = cookie.trim().split("=");
-    acc[name] = rest.join("=");
-    return acc;
-  }, {});
-  // await page.setCookie(...cookies);
+  await page.setCookie(...cookies);
 
   await page.goto(url, { waitUntil: "networkidle0" });
 
