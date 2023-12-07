@@ -101,7 +101,9 @@ exports.handler = async (event, context) => {
 
   await page.setViewport({ width, height, deviceScaleFactor: scale });
 
-  await page.setCookie(...cookies);
+  for (let i = 0; i < cookies.length; i++) {
+    await page.setCookie(cookies[i]);
+  }
 
   await page.goto(url, { waitUntil: "networkidle0" });
 
