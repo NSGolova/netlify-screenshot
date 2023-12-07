@@ -29,9 +29,14 @@ exports.handler = async (event, context) => {
     if (parts.length >= 2) {
       const name = parts.shift();
       const value = parts.join("=");
-      var entry = {};
-      entry[name] = value;
-      acc.push(entry);
+      acc.push({
+        name,
+        value,
+        domain: ".beatleader.xyz",
+        secure: true,
+        sameSite: "none",
+        path: "/",
+      });
     }
     return acc;
   }, []);
